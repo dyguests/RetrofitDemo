@@ -31,6 +31,7 @@ public class MainActivity extends AbsActivity {
 
     @OnClick(R.id.sync)
     void sync() {
+        //// FIXME: 15/12/7
         //do not run long time process in UI thread.
         new Thread(() -> {
             Response<GengerConfirmInfo> response = null;
@@ -48,7 +49,21 @@ public class MainActivity extends AbsActivity {
 
     @OnClick(R.id.async)
     void async() {
+        app.getClient().getGenderService().poll().enqueue(new Callback<GengerConfirmInfo>() {
 
+            @Override
+            public void onResponse(Response<GengerConfirmInfo> response, Retrofit retrofit) {
+                GengerConfirmInfo info = response.body();
+                if (info != null) {
+                    mTextView.setText(info.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
     }
 
     @OnClick(R.id.rx)
