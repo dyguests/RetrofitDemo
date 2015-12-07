@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.fanhl.retrofitdemo.R;
+import com.fanhl.retrofitdemo.rest.model.FolderResponse;
 import com.fanhl.retrofitdemo.rest.model.GengerConfirmInfo;
 
 import java.io.IOException;
@@ -33,14 +34,13 @@ public class MainActivity extends AbsActivity {
 
     @OnClick(R.id.sync)
     void sync() {
-        // FIXME: 15/12/7
         //do not run long time process in UI thread.
         new AsyncTask<Void, Void, GengerConfirmInfo>() {
             @Override
             protected GengerConfirmInfo doInBackground(Void... params) {
                 try {
                     //sync
-                    return app.getClient().getGenderService().poll().execute().body();
+                    return app.getClient().getHomeService().poll().execute().body();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -51,6 +51,8 @@ public class MainActivity extends AbsActivity {
             protected void onPostExecute(GengerConfirmInfo gengerConfirmInfo) {
                 if (gengerConfirmInfo != null) {
                     mTextView.setText(gengerConfirmInfo.toString());
+                } else {
+                    mTextView.setText("Oops.Something is error.");
                 }
             }
         }.execute();
@@ -58,7 +60,7 @@ public class MainActivity extends AbsActivity {
 
     @OnClick(R.id.async)
     void async() {
-        app.getClient().getGenderService().poll().enqueue(new Callback<GengerConfirmInfo>() {
+        app.getClient().getHomeService().poll().enqueue(new Callback<GengerConfirmInfo>() {
 
             @Override
             public void onResponse(Response<GengerConfirmInfo> response, Retrofit retrofit) {
@@ -71,6 +73,23 @@ public class MainActivity extends AbsActivity {
             @Override
             public void onFailure(Throwable t) {
                 Log.e(TAG, Log.getStackTraceString(t));
+                mTextView.setText(Log.getStackTraceString(t));
+            }
+        });
+    }
+
+    @OnClick(R.id.param)
+    void param() {
+        app.getClient().getHomeService().bookList("newest", 0, 5, "name", "").enqueue(new Callback<FolderResponse>() {
+            @Override
+            public void onResponse(Response<FolderResponse> response, Retrofit retrofit) {
+                mTextView.setText(response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e(TAG, Log.getStackTraceString(t));
+                mTextView.setText(Log.getStackTraceString(t));
             }
         });
     }

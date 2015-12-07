@@ -1,7 +1,7 @@
 package com.fanhl.retrofitdemo.rest;
 
 import com.fanhl.retrofitdemo.rest.service.FileDownloadService;
-import com.fanhl.retrofitdemo.rest.service.GenderService;
+import com.fanhl.retrofitdemo.rest.service.HomeService;
 
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
@@ -12,7 +12,7 @@ import retrofit.Retrofit;
 public class MyClient {
 
     public static final String BASE_URL = "http://www.doujinmoe.us";
-    private final GenderService       genderService;
+    private final HomeService         homeService;
     private final FileDownloadService fileDownloadService;
 
     public MyClient() {
@@ -21,12 +21,12 @@ public class MyClient {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        genderService = retrofit.create(GenderService.class);
+        homeService = retrofit.create(HomeService.class);
         fileDownloadService = retrofit.create(FileDownloadService.class);
     }
 
-    public GenderService getGenderService() {
-        return genderService;
+    public HomeService getHomeService() {
+        return homeService;
     }
 
     public FileDownloadService getFileDownloadService() {
