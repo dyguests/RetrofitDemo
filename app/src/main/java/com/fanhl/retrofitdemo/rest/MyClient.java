@@ -1,6 +1,5 @@
 package com.fanhl.retrofitdemo.rest;
 
-import com.fanhl.retrofitdemo.rest.service.FileDownloadService;
 import com.fanhl.retrofitdemo.rest.service.HomeService;
 
 import retrofit.GsonConverterFactory;
@@ -12,8 +11,7 @@ import retrofit.Retrofit;
 public class MyClient {
 
     public static final String BASE_URL = "http://www.doujinmoe.us";
-    private final HomeService         homeService;
-    private final FileDownloadService fileDownloadService;
+    private final HomeService homeService;
 
     public MyClient() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -22,14 +20,9 @@ public class MyClient {
                 .build();
 
         homeService = retrofit.create(HomeService.class);
-        fileDownloadService = retrofit.create(FileDownloadService.class);
     }
 
     public HomeService getHomeService() {
         return homeService;
-    }
-
-    public FileDownloadService getFileDownloadService() {
-        return fileDownloadService;
     }
 }
