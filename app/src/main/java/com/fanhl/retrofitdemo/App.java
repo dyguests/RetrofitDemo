@@ -2,22 +2,22 @@ package com.fanhl.retrofitdemo;
 
 import android.app.Application;
 
-import com.fanhl.retrofitdemo.rest.DoujinClient;
+import com.fanhl.retrofitdemo.rest.MyClient;
 
 /**
  * Created by fanhl on 15/12/1.
  */
 public class App extends Application {
 
-    private DoujinClient doujinClient;
+    private MyClient client;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        doujinClient = new DoujinClient();
+        client = new MyClient();
     }
 
-    public DoujinClient getDoujinClient() {
-        return doujinClient;
+    public MyClient getClient() {
+        return client;
     }
 }
