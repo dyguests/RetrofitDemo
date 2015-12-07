@@ -1,6 +1,8 @@
 package com.fanhl.retrofitdemo.ui;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.fanhl.retrofitdemo.R;
@@ -31,20 +33,27 @@ public class MainActivity extends AbsActivity {
 
     @OnClick(R.id.sync)
     void sync() {
-        //// FIXME: 15/12/7
+        // FIXME: 15/12/7
         //do not run long time process in UI thread.
-        new Thread(() -> {
-            Response<GengerConfirmInfo> response = null;
-            try {
-                response = app.getClient().getGenderService().poll().execute();
-            } catch (IOException e) {
-                e.printStackTrace();
+        new AsyncTask<Void, Void, GengerConfirmInfo>() {
+            @Override
+            protected GengerConfirmInfo doInBackground(Void... params) {
+                try {
+                    //sync
+                    return app.getClient().getGenderService().poll().execute().body();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
-            if (response != null) {
-                final Response<GengerConfirmInfo> finalResponse = response;
-                runOnUiThread(() -> mTextView.setText(finalResponse.body().toString()));
+
+            @Override
+            protected void onPostExecute(GengerConfirmInfo gengerConfirmInfo) {
+                if (gengerConfirmInfo != null) {
+                    mTextView.setText(gengerConfirmInfo.toString());
+                }
             }
-        }).start();
+        }.execute();
     }
 
     @OnClick(R.id.async)
@@ -61,7 +70,7 @@ public class MainActivity extends AbsActivity {
 
             @Override
             public void onFailure(Throwable t) {
-
+                Log.e(TAG, Log.getStackTraceString(t));
             }
         });
     }
