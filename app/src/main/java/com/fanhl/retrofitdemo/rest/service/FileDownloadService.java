@@ -1,6 +1,8 @@
 package com.fanhl.retrofitdemo.rest.service;
 
+
 import retrofit.Call;
+import retrofit.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Streaming;
@@ -11,5 +13,5 @@ import retrofit.http.Streaming;
 public interface FileDownloadService {
     @Streaming
     @GET("{url}")
-    Call<Void> downloadFile(@Path("url") String url);
+    Call<Response> downloadFile(@Path("url") String url);
 }

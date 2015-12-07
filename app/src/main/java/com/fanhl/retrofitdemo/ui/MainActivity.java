@@ -1,10 +1,12 @@
 package com.fanhl.retrofitdemo.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.fanhl.retrofitdemo.R;
+import com.fanhl.retrofitdemo.rest.model.GengerConfirmInfo;
+
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,7 +31,19 @@ public class MainActivity extends AbsActivity {
 
     @OnClick(R.id.sync)
     void sync() {
-
+        //do not run long time process in UI thread.
+        new Thread(() -> {
+            Response<GengerConfirmInfo> response = null;
+            try {
+                response = app.getClient().getGenderService().poll().execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (response != null) {
+                final Response<GengerConfirmInfo> finalResponse = response;
+                runOnUiThread(() -> mTextView.setText(finalResponse.body().toString()));
+            }
+        }).start();
     }
 
     @OnClick(R.id.async)
@@ -44,17 +58,19 @@ public class MainActivity extends AbsActivity {
 
     @OnClick(R.id.download)
     void download() {
-        app.getClient().getFileDownloadService().downloadFile("")
-                .enqueue(new Callback<Void>() {
+        String url = "https://raw.githubusercontent.com/dyguests/RetrofitDemo/master/graphics/head.jpg";
+        app.getClient().getFileDownloadService().downloadFile(url)
+                .enqueue(new Callback<Response>() {
                     @Override
-                    public void onResponse(Response<Void> response, Retrofit retrofit) {
-
+                    public void onResponse(Response<Response> response, Retrofit retrofit) {
+                        //OK , I give up.
                     }
 
                     @Override
                     public void onFailure(Throwable t) {
-                        Log.e(TAG, "Ooops,download failed.");
+
                     }
                 });
+
     }
 }
